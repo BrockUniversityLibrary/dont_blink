@@ -5,9 +5,9 @@
  * 
  */
 
-current = 0;
-but_press = LOW;
-inter = 1000;
+int current = 0;
+boolean but_press = LOW;
+int inter = 1000;
 long last = millis();
 
 
@@ -34,7 +34,7 @@ increment(){
 
   current = (current++) % 5;
   for (int i = 0; i < 5; i++)
-    digitalWrite(i,LOW);
+    digitalWrite(8+ i,LOW);
   digitalWrite(8 + current,HIGH)
 }
 
@@ -53,42 +53,70 @@ if (millis() - last > inter){
       delay(100);
       digitalWrite(8 + 3, HIGH);
 
-      switch(current){
-          case current > 700:{
-            current -= 100;
+      switch(inter){
+          case inter > 700:{
+            inter -= 100;
             break;
           }
-          case current > 500:{
-            current -= 50;
+          case inter > 500:{
+            inter -= 50;
             break;
           }
-          case current > 300:{
-            current -= 25;
+          case inter > 300:{
+            inter -= 25;
             break;
           }
-          case current > 10:{
-            current -= 1
+          case inter > 10:{
+            inter -= 1
             break;
           } 
         }
+      Serial.print("Score: ");
+      Serial.println(inter);
+      
       }
-    
+      else {
+      
+      Serial.println("GAME OVER");
+      Serial.print("Final Score: ");
+      Serial.println(inter);
+
+      for (int i = 0: i < 6; i++){
+        digitalWrite(8 + current, LOW);
+        delay(150);
+        digitalWrite(8 + current, HIGH);
+      }
+
+      
+     digitalWrite(8, HIGH);
+     switch(inter)
+     {
+      case inter < 800:{
+        digitalWrite(9,HIGH);
+        delay(250);
+        break;
+      }
+      case inter < 600:{
+        digitalWrite(10,HIGH);
+        delay(250);
+        break;
+      }
+      case inter < 250:{
+        digitalWrite(11, HIGH);
+        delay(250);
+      }
+      case inter < 100:{
+        digitalWrite(12, HIGH);
+        delay(250);
+      }
+     }
+    delay(2000);
+    setup_game();
     }
   }
+
+ but_press = digitalRead(0);
   
 }
 
 
-
-
-
-/*
-
-  for( int i = 8; i < 13; i++){
-     digitalWrite(i, HIGH);   // turn the LED on (HIGH is the voltage level)
-     delay(1000);              // wait for a second
-     digitalWrite(i, LOW);    // turn the LED off by making the voltage LOW
-    delay(1000);               // wait for a second
-  }
-  
-*/

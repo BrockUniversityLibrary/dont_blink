@@ -6,117 +6,135 @@
  */
 
 int current = 0;
-boolean but_press = LOW;
-int inter = 1000;
+int but_press;
+int interval = 500;
 long last = millis();
 
 
 //Basics
 void setup() {
-  pinMode(0, INPUT);
+  pinMode(1, INPUT);
+  digitalWrite(1, HIGH);
   pinMode(8, OUTPUT); 
   pinMode(9, OUTPUT); 
   pinMode(10, OUTPUT);
   pinMode(11, OUTPUT);
   pinMode(12, OUTPUT);
+
+  digitalWrite(8, HIGH);
+  digitalWrite(9, HIGH);
+  digitalWrite(10, HIGH);
+  digitalWrite(11, HIGH);
+  digitalWrite(12, HIGH);
+  delay(500);
+  digitalWrite(8, LOW);
+  digitalWrite(9, LOW);
+  digitalWrite(10, LOW);
+  digitalWrite(11, LOW);
+  digitalWrite(12, LOW);
+  
   Serial.begin(9600);
+  setup_game();
+  last = millis();
 }
 
 
-setup_game(){
+void setup_game(){
   current = 0;
-  inter = 1000;
+  interval = 1000;
   Serial.println("New Game");
-
 }
 
-increment(){
+void increment(){
 
-  current = (current++) % 5;
-  for (int i = 0; i < 5; i++)
-    digitalWrite(8+ i,LOW);
-  digitalWrite(8 + current,HIGH)
+  for (int i = 0; i < 5; i++){
+    digitalWrite(8 + i,LOW);
+  }
+  digitalWrite(8 + current,HIGH);
+  current = (current + 1) % 5;
 }
 
+
+//HIGH is pressed
 
 void loop() {
 
-if (millis() - last > inter){
-  last = millis();
+if ((millis() - last) > interval){
 
+
+  last = millis();
   increment();
 
-  if(but_press = LOW && digitalRead(0) == HIGH){
 
+  if(digitalRead(1) == HIGH && but_press == HIGH)
+  {
     if(current == 3){
+
       digitalWrite(8 + 3, LOW);
       delay(100);
       digitalWrite(8 + 3, HIGH);
+      digitalWrite(8 + 3, LOW);
+      delay(100);
+      digitalWrite(8 + 3, HIGH);
+      digitalWrite(8 + 3, LOW);
+      delay(100);
 
-      switch(inter){
-          case inter > 700:{
-            inter -= 100;
-            break;
-          }
-          case inter > 500:{
-            inter -= 50;
-            break;
-          }
-          case inter > 300:{
-            inter -= 25;
-            break;
-          }
-          case inter > 10:{
-            inter -= 1
-            break;
-          } 
-        }
-      Serial.print("Score: ");
-      Serial.println(inter);
-      
-      }
-      else {
-      
-      Serial.println("GAME OVER");
-      Serial.print("Final Score: ");
-      Serial.println(inter);
-
-      for (int i = 0: i < 6; i++){
-        digitalWrite(8 + current, LOW);
-        delay(150);
-        digitalWrite(8 + current, HIGH);
-      }
-
-      
-     digitalWrite(8, HIGH);
-     switch(inter)
+     if (interval > 700)
      {
-      case inter < 800:{
+      interval = interval - 100;
+     }
+     else if (interval > 500)
+     {
+      interval = interval - 50;
+     }
+     else if(interval > 300){
+            interval = interval - 25;
+     }
+     else if(interval > 100){
+            interval = interval - 1;
+     } 
+     
+      Serial.print("Score: ");
+      Serial.println(interval);
+      
+     }  
+     else     
+     { 
+      Serial.print("GAME OVER");
+      Serial.print(" Final Score: ");
+      Serial.println(interval);
+      setup_game(); 
+     }
+
+    }
+  }   
+}
+
+   /*   
+    digitalWrite(8, HIGH);
+    if( iterval < 800)
+    {
         digitalWrite(9,HIGH);
         delay(250);
-        break;
-      }
-      case inter < 600:{
+    }
+    if (interval < 600)
+    {
         digitalWrite(10,HIGH);
         delay(250);
-        break;
-      }
-      case inter < 250:{
+    }
+    if (interval < 250)
+    {
         digitalWrite(11, HIGH);
         delay(250);
-      }
-      case inter < 100:{
+    }
+    if (interval < 100)
+    {
         digitalWrite(12, HIGH);
         delay(250);
-      }
-     }
-    delay(2000);
-    setup_game();
     }
-  }
+    }
+    delay(2000);
+    */
 
- but_press = digitalRead(0);
-  
-}
 
 
